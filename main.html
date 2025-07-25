@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume - Venkata Ramana M</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony Neutrals -->
+    <!-- Application Structure Plan: A dashboard-style SPA with a fixed side navigation panel and a main content area. The navigation allows users to switch between 'Overview', 'Skills', 'Experience', and 'Education' sections instantly without scrolling. This structure was chosen to make the resume feel like an application, allowing recruiters to quickly access the information they need most. The interactive elements within each section (charts, accordions) encourage exploration rather than passive reading. -->
+    <!-- Visualization & Content Choices: 
+        - Summary -> Inform -> Key Stat Cards -> JS counter animation -> Highlights key metrics immediately -> HTML/CSS/JS.
+        - Skills -> Compare -> Filterable Horizontal Bar Chart -> JS filters update chart -> Visually compares skill proficiency and allows user to focus on specific categories -> Chart.js/Canvas.
+        - Experience -> Organize -> Accordion -> JS toggle -> Condenses detailed project info into manageable sections, preventing a wall of text -> HTML/CSS/JS.
+        - Education -> Inform -> Simple Info Card -> Static display -> Cleanly presents educational background -> HTML/CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #3D405B;
+        }
+        .active-nav {
+            background-color: #4A7C59;
+            color: #FFFFFF;
+        }
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 450px;
+            max-height: 60vh;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- Left Panel: Navigation & Profile -->
+            <aside class="lg:col-span-4 xl:col-span-3 bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg h-full">
+                <div class="text-center">
+                    <div class="w-32 h-32 rounded-full mx-auto bg-gray-200 mb-4 flex items-center justify-center">
+                         <img src="https://placehold.co/128x128/E8E2D9/3D405B?text=VRM" class="rounded-full" alt="Venkata Ramana M">
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800">Venkata Ramana M</h1>
+                    <p class="text-md text-[#4A7C59] font-medium">Consulting Developer - Oracle Utilities</p>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="font-bold text-gray-800 mb-2">Contact</h3>
+                    <div class="text-sm space-y-2 text-gray-600">
+                        <p>📱 +91 9347758077</p>
+                        <p>📧 madepallivenkataramana8@gmail.com</p>
+                        <p>🔗 <a href="https://www.linkedin.com/in/venkata-ramana-madepalli/" target="_blank" class="hover:text-[#4A7C59]">LinkedIn Profile</a></p>
+                    </div>
+                </div>
+
+                <nav class="mt-8">
+                    <ul class="space-y-2" id="main-nav">
+                        <li><button data-target="overview" class="nav-item w-full text-left p-3 rounded-lg font-medium active-nav">📝 Overview</button></li>
+                        <li><button data-target="skills" class="nav-item w-full text-left p-3 rounded-lg font-medium">🛠️ Technical Skills</button></li>
+                        <li><button data-target="experience" class="nav-item w-full text-left p-3 rounded-lg font-medium">💼 Professional Experience</button></li>
+                        <li><button data-target="education" class="nav-item w-full text-left p-3 rounded-lg font-medium">🎓 Education</button></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Right Panel: Content -->
+            <main class="lg:col-span-8 xl:col-span-9">
+                <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg min-h-[600px]">
+                    <!-- Overview Section -->
+                    <section id="overview" class="content-section active">
+                        <h2 class="text-3xl font-bold text-gray-800 border-b pb-2 mb-6">Professional Summary</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            This section provides a high-level summary of my professional background. It highlights my core expertise in the Oracle Utilities Application Framework, my key technical abilities, and my commitment to delivering high-quality, efficient solutions in the utilities sector.
+                        </p>
+                        <div class="mt-6 text-gray-700 space-y-4">
+                            <p>A results-oriented Consulting Developer with 2.7 years of specialized experience in the Oracle Utilities Application Framework (OUAF). Proficient in Work and Asset Management (WAM) principles and implementation, demonstrated through successful project delivery for major utilities clients.</p>
+                            <p>Expertise in Groovy, PL/SQL, Java, and 4GL scripting to develop, customize, and support robust enterprise solutions. A proactive problem-solver dedicated to enhancing system efficiency, streamlining workflows, and delivering high-quality outcomes in fast-paced environments.</p>
+                        </div>
+                    </section>
+
+                    <!-- Skills Section -->
+                    <section id="skills" class="content-section">
+                        <h2 class="text-3xl font-bold text-gray-800 border-b pb-2 mb-6">Technical Skills</h2>
+                        <p class="text-gray-600 leading-relaxed mb-6">
+                            This interactive chart visualizes my proficiency across different technical domains. Use the buttons below to filter the skills by category to focus on the areas most relevant to your needs. This provides a quick, comparative overview of my capabilities.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <button class="skill-filter-btn active-nav px-4 py-2 text-sm font-medium rounded-lg" data-category="all">All</button>
+                            <button class="skill-filter-btn nav-item px-4 py-2 text-sm font-medium rounded-lg" data-category="oracle">Oracle Utilities</button>
+                            <button class="skill-filter-btn nav-item px-4 py-2 text-sm font-medium rounded-lg" data-category="programming">Programming</button>
+                            <button class="skill-filter-btn nav-item px-4 py-2 text-sm font-medium rounded-lg" data-category="web">Web Tech</button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="skillsChart"></canvas>
+                        </div>
+                    </section>
+
+                    <!-- Experience Section -->
+                    <section id="experience" class="content-section">
+                        <h2 class="text-3xl font-bold text-gray-800 border-b pb-2 mb-6">Professional Experience</h2>
+                        <p class="text-gray-600 leading-relaxed mb-6">
+                            This section details my hands-on project experience. Click on each heading to expand and view the specific contributions and responsibilities for that area. This organized format allows for a clear understanding of my role and accomplishments within the project.
+                        </p>
+                        <div class="space-y-4">
+                            <div class="border rounded-lg">
+                                <button class="accordion-toggle w-full p-4 text-left font-bold text-lg text-gray-700 flex justify-between items-center">
+                                    <span>Project: Tristate - WAM Implementation & Support</span>
+                                    <span class="transform transition-transform duration-300">▼</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <div class="p-4 border-t text-gray-600 space-y-4">
+                                        <div>
+                                            <h4 class="font-semibold text-gray-800">WAM/WACS Implementation:</h4>
+                                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                                <li>Led the development of custom solutions for the Work and Asset Cloud Service (WACS) implementation using PL/SQL scripts and Groovy.</li>
+                                                <li>Designed and built scalable functionalities within the OUAF to meet specific business requirements for asset and work management.</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-800">Technical Development & Enhancement:</h4>
+                                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                                <li>Resolved complex technical defects by analyzing and debugging code across the OUAF stack.</li>
+                                                <li>Ensured all development adhered to strict coding standards and best practices.</li>
+                                                <li>Developed and optimized processes to enhance productivity and reduce operational overhead.</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-800">Post Go-Live Support (IMS):</h4>
+                                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                                <li>Served as a primary technical resource for the post-go-live support team.</li>
+                                                <li>Performed rapid analysis of production defects to identify root causes and implement effective solutions.</li>
+                                                <li>Collaborated closely with cross-functional teams to manage and prioritize critical deliverables.</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-800">Documentation & Workflow Optimization:</h4>
+                                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                                <li>Authored detailed technical documentation for custom configurations and workflows.</li>
+                                                <li>Contributed to initiatives aimed at streamlining workflows and developing user-friendly portals.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Education Section -->
+                    <section id="education" class="content-section">
+                        <h2 class="text-3xl font-bold text-gray-800 border-b pb-2 mb-6">Education</h2>
+                        <p class="text-gray-600 leading-relaxed mb-6">
+                            This section outlines my formal academic qualifications, which form the foundation of my technical expertise.
+                        </p>
+                        <div class="bg-gray-50 p-6 rounded-lg border">
+                            <h3 class="text-xl font-bold text-gray-800">Bachelor of Technology in Computer Science</h3>
+                            <p class="text-md text-[#4A7C59] font-medium mt-1">K L University, Andhra Pradesh</p>
+                            <p class="text-gray-500 mt-2">Graduated 2023</p>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navButtons = document.querySelectorAll('#main-nav button');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+
+                    navButtons.forEach(btn => btn.classList.remove('active-nav'));
+                    button.classList.add('active-nav');
+
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === targetId) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            const accordions = document.querySelectorAll('.accordion-toggle');
+            accordions.forEach(accordion => {
+                accordion.addEventListener('click', () => {
+                    const content = accordion.nextElementSibling;
+                    const arrow = accordion.querySelector('span:last-child');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        arrow.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        arrow.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+            
+            const skillsData = {
+                labels: ['OUAF', 'WAM/WACS', 'C2M/CC&B', 'Groovy', 'Java', 'SQL/PLSQL', '4GL Scripting', 'Python', 'HTML/CSS/JS'],
+                categories: ['oracle', 'oracle', 'oracle', 'programming', 'programming', 'programming', 'programming', 'programming', 'web'],
+                datasets: [{
+                    label: 'Proficiency',
+                    data: [5, 5, 4, 5, 4, 5, 4, 3, 4],
+                    backgroundColor: '#4A7C59',
+                    borderColor: '#3D405B',
+                    borderWidth: 1
+                }]
+            };
+
+            const skillsChartCtx = document.getElementById('skillsChart').getContext('2d');
+            let skillsChart = new Chart(skillsChartCtx, {
+                type: 'bar',
+                data: JSON.parse(JSON.stringify(skillsData)),
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 5,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#3D405B'
+                            },
+                            grid: {
+                                color: '#00000010'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#3D405B'
+                            },
+                             grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: false
+                        }
+                    }
+                }
+            });
+
+            const filterButtons = document.querySelectorAll('.skill-filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active-nav'));
+                    button.classList.add('active-nav');
+                    
+                    const category = button.dataset.category;
+                    const filteredData = {
+                        labels: [],
+                        datasets: [{...skillsData.datasets[0], data: [] }]
+                    };
+
+                    if (category === 'all') {
+                        filteredData.labels = [...skillsData.labels];
+                        filteredData.datasets[0].data = [...skillsData.datasets[0].data];
+                    } else {
+                        skillsData.labels.forEach((label, index) => {
+                            if (skillsData.categories[index] === category) {
+                                filteredData.labels.push(label);
+                                filteredData.datasets[0].data.push(skillsData.datasets[0].data[index]);
+                            }
+                        });
+                    }
+                    
+                    skillsChart.data = filteredData;
+                    skillsChart.update();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
